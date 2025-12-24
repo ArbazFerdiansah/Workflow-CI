@@ -1,0 +1,65 @@
+name: MLflow Model Training - Basic
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  train-model:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # 1. Checkout repository
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    # 2. Setup Python
+    - name: Set up Python 3.12.7
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12.7'
+    
+    # 3. Check environment
+    - name: Check Environment
+      run: |
+        python --version
+        pip --version
+        echo "Working directory: $(pwd)"
+        ls -la
+    
+    # 4. Install dependencies
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install mlflow==2.19.0 pandas numpy scikit-learn
+        echo "Dependencies installed successfully!"
+    
+    # 5. Run MLflow project
+    - name: Run MLflow Project
+      working-directory: ./MLProject
+      run: |
+        echo "Running MLflow training..."
+        mlflow run . --no-conda \
+          -P n_estimators=100 \
+          -P random_state=42
+        echo "Training completed!"
+    
+    # 6. Get latest MLflow run ID
+    - name: Get Latest MLflow Run ID
+      id: get_run_id
+      run: |
+        echo "Getting latest MLflow run..."
+        # This is a placeholder - actual implementation may vary
+        echo "run_id=placeholder" >> $GITHUB_OUTPUT
+
+    # 7. Job completion
+    - name: Training Job Complete
+      run: |
+        echo "=========================================="
+        echo "✅ Model training workflow completed!"
+        echo "=========================================="
+        echo "Check MLflow UI for results"
+        echo "Artifacts will be saved in mlruns/ directory"
