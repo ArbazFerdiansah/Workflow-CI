@@ -12,9 +12,6 @@ def train_model(n_estimators=100, random_state=42):
     Train Random Forest model with MLflow tracking
     """
     
-    # Setup MLflow
-    mlflow.set_experiment("Telco_Churn_CI_Workflow")
-    
     print("="*60)
     print("Starting model training with MLflow tracking")
     print("="*60)
@@ -37,11 +34,6 @@ def train_model(n_estimators=100, random_state=42):
     
     # Enable autolog
     mlflow.sklearn.autolog()
-    
-    # Log parameters
-    mlflow.log_param("n_estimators", n_estimators)
-    mlflow.log_param("random_state", random_state)
-    mlflow.log_param("test_size", 0.2)
     
     # Train model
     print(f"\nTraining with n_estimators={n_estimators}, random_state={random_state}")
@@ -69,12 +61,6 @@ def train_model(n_estimators=100, random_state=42):
     print(f"   Precision: {precision:.4f}")
     print(f"   Recall:    {recall:.4f}")
     print(f"   F1-Score:  {f1:.4f}")
-    
-    # Log metrics
-    mlflow.log_metric("test_accuracy", accuracy)
-    mlflow.log_metric("test_precision", precision)
-    mlflow.log_metric("test_recall", recall)
-    mlflow.log_metric("test_f1_score", f1)
     
     print("\nMetrics logged to MLflow!")
     print("Model saved to MLflow!")
