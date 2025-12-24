@@ -35,46 +35,51 @@ def train_model(n_estimators=100, random_state=42):
     print(f"Train set: {X_train.shape}")
     print(f"Test set: {X_test.shape}")
     
-    # Start MLflow run
-    with mlflow.start_run():
-        
-        # Enable autolog
-        mlflow.sklearn.autolog()
-        
-        # Log parameters
-        print(f"\nTraining with n_estimators={n_estimators}, random_state={random_state}")
-        
-        # Train model
-        model = RandomForestClassifier(
-            n_estimators=int(n_estimators),
-            random_state=int(random_state),
-            n_jobs=-1
-        )
-        
-        model.fit(X_train, y_train)
-        print("Model training completed!")
-        
-        # Predictions
-        y_pred = model.predict(X_test)
-        
-        # Metrics
-        accuracy = accuracy_score(y_test, y_pred)
-        precision = precision_score(y_test, y_pred)
-        recall = recall_score(y_test, y_pred)
-        f1 = f1_score(y_test, y_pred)
-        
-        print(f"\nModel Performance:")
-        print(f"   Accuracy:  {accuracy:.4f}")
-        print(f"   Precision: {precision:.4f}")
-        print(f"   Recall:    {recall:.4f}")
-        print(f"   F1-Score:  {f1:.4f}")
-        
-        # Get run info
-        run = mlflow.active_run()
-        print(f"\nMLflow Run ID: {run.info.run_id}")
-        print("Model saved to MLflow!")
-        
-        return run.info.run_id
+    # Enable autolog
+    mlflow.sklearn.autolog()
+    
+    # Log parameters
+    mlflow.log_param("n_estimators", n_estimators)
+    mlflow.log_param("random_state", random_state)
+    mlflow.log_param("test_size", 0.2)
+    
+    # Train model
+    print(f"\nTraining with n_estimators={n_estimators}, random_state={random_state}")
+    
+    model = RandomForestClassifier(
+        n_estimators=int(n_estimators),
+        random_state=int(random_state),
+        n_jobs=-1
+    )
+    
+    model.fit(X_train, y_train)
+    print("Model training completed!")
+    
+    # Predictions
+    y_pred = model.predict(X_test)
+    
+    # Metrics
+    accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred)
+    
+    print(f"\nModel Performance:")
+    print(f"   Accuracy:  {accuracy:.4f}")
+    print(f"   Precision: {precision:.4f}")
+    print(f"   Recall:    {recall:.4f}")
+    print(f"   F1-Score:  {f1:.4f}")
+    
+    # Log metrics
+    mlflow.log_metric("test_accuracy", accuracy)
+    mlflow.log_metric("test_precision", precision)
+    mlflow.log_metric("test_recall", recall)
+    mlflow.log_metric("test_f1_score", f1)
+    
+    print("\nMetrics logged to MLflow!")
+    print("Model saved to MLflow!")
+    
+    return accuracy
 
 if __name__ == "__main__":
     # Get parameters from command line
@@ -82,8 +87,9 @@ if __name__ == "__main__":
     random_state = int(sys.argv[2]) if len(sys.argv) > 2 else 42
     
     # Train model
-    run_id = train_model(n_estimators, random_state)
+    accuracy = train_model(n_estimators, random_state)
     
     print("\n" + "="*60)
     print("TRAINING COMPLETED SUCCESSFULLY!")
+    print(f"Final Test Accuracy: {accuracy:.4f}")
     print("="*60)
