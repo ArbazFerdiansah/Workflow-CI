@@ -42,7 +42,7 @@ jobs:
       working-directory: ./MLProject
       run: |
         echo "Running MLflow training..."
-        mlflow run . \
+        mlflow run . --env-manager=local \
           -P n_estimators=100 \
           -P random_state=42
         echo "Training completed!"
@@ -52,7 +52,6 @@ jobs:
       id: get_run_id
       run: |
         echo "Getting latest MLflow run..."
-        # This is a placeholder - actual implementation may vary
         echo "run_id=placeholder" >> $GITHUB_OUTPUT
 
     # 7. Job completion
