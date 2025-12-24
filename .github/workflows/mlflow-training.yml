@@ -1,4 +1,4 @@
-name: MLflow Model Training - Basic
+name: MLflow Model Training
 
 on:
   push:
@@ -42,7 +42,7 @@ jobs:
       working-directory: ./MLProject
       run: |
         echo "Running MLflow training..."
-        mlflow run . --no-conda \
+        mlflow run . \
           -P n_estimators=100 \
           -P random_state=42
         echo "Training completed!"
@@ -59,7 +59,7 @@ jobs:
     - name: Training Job Complete
       run: |
         echo "=========================================="
-        echo "✅ Model training workflow completed!"
+        echo "Model training workflow completed!"
         echo "=========================================="
         echo "Check MLflow UI for results"
         echo "Artifacts will be saved in mlruns/ directory"
